@@ -3,6 +3,7 @@ const actionModel = require('../data/helpers/actionModel')
 
 const router = express.Router();
 
+// Get 
 router.get('/', (req, res) => {
     actionModel.get()
         .then(actions => res.json(actions))
@@ -11,6 +12,7 @@ router.get('/', (req, res) => {
             .json({error: "The action coould not be retrieved."}))
 })
 
+// Get ID
 router.get('/:id', (req, res) => {
     const {id} = req.params
 
@@ -30,6 +32,7 @@ router.get('/:id', (req, res) => {
         )
 })
 
+// Post
 router.post('/', (req, res) => {
     const action = req.body;
 
@@ -47,4 +50,23 @@ router.post('/', (req, res) => {
     }
 })
 
+// Delete
+router.delete('/:id', (req, res) => {
+    const {id} = req.params;
+
+    actionModel.remove(id).then(count => {
+        if (count) {
+            res.json({message: "Successfully Delete Action"})
+        } else {
+            res.status(404) 
+            .json({message: `The action with the id of ${id} does not exist.`})
+        }
+    })
+    .catch(err => {
+        res.status(500)
+        .json({error: "The action could not be removed."})
+    })
+})
+
+// Update
 module.exports = router;
