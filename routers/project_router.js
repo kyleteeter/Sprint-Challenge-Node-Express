@@ -68,4 +68,29 @@ router.delete('/:id', (req, res) => {
 })
 
 // Update
+router.put('/:id', (req, res) => {
+    const project = req.body
+    const {id} = req.params
+
+    if (project){
+        projectModel.update(id, project)
+        .then(count => {
+            if (count) {
+                projectModel.get(id).then(project => {
+                    res.json(project)
+                })
+            }else {
+                res.status(400).json({error: `The project ${id} doesn't exist.`})
+            }
+        })
+        .catch(err => {
+            res.status(500)
+            .json({error: "The project could not be modified."})
+        })
+    }else {
+        res.status(400).json({error: "Please provide new info."})
+    }
+})
+
+
 module.exports = router;

@@ -68,5 +68,31 @@ router.delete('/:id', (req, res) => {
     })
 })
 
-// Update
+// Update (Put)
+
+router.put('/:id', (req, res) => {
+    const action = req.body
+    const {id} = req.params
+
+    if (action){
+        actionModel.update(id, action)
+        .then(count => {
+            if (count) {
+                actionModel.get(id).then(action => {
+                    res.json(action)
+                })
+            }else {
+                res.status(400).json({error: `The action ${id} doesn't exist.`})
+            }
+        })
+        .catch(err => {
+            res.status(500)
+            .json({error: "The action could not be modified."})
+        })
+    }else {
+        res.status(400).json({error: "Please provide new info."})
+    }
+})
+
+
 module.exports = router;
